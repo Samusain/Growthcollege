@@ -518,7 +518,7 @@ h1, h2, h3, h4 {
 /* MOTIVATIONAL QUOTE SECTION */
 .motivational-quote {
   padding: 100px 0;
-  background-image: url('./Fdwaves.png');
+  background-image: url('./images/Fdwaves.png');
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -757,7 +757,7 @@ h1, h2, h3, h4 {
 /* GROWTH MODEL SECTION */
 .model {
   padding: 100px 0;
-  background-image: url('./Bluewave.png');
+  background-image: url('./images/Bluewave.png');
   background-repeat: no-repeat;
   background-size: cover;
 }
