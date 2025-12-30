@@ -1,443 +1,524 @@
-// ENHANCED JAVASCRIPT WITH MOTION EFFECTS
+// ============ GLOBAL VARIABLES ============
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const leadForm = document.getElementById('leadForm');
 
-// Create floating particles
-function createParticles() {
-  const particleCount = 15;
-  
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    
-    // Random size
-    const size = Math.random() * 60 + 20;
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    
-    // Random position
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.top = `${Math.random() * 100}%`;
-    
-    // Random animation
-    const duration = Math.random() * 20 + 10;
-    particle.style.animationDuration = `${duration}s`;
-    
-    // Add to body
-    document.body.appendChild(particle);
-  }
-}
-
-// Enhanced scroll animation
-function initScrollAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        
-        // Add specific animations based on element type
-        if (entry.target.classList.contains('program-card')) {
-          setTimeout(() => {
-            entry.target.style.transform = 'translateY(0) scale(1)';
-          }, 100);
-        }
-        
-        if (entry.target.classList.contains('step')) {
-          entry.target.style.transitionDelay = '0.1s';
-        }
-      }
-    });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-  });
-  
-  // Observe all elements with fade-in class
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-}
-
-// Enhanced hero image hover effect
-function enhanceHeroImage() {
-  const heroImage = document.querySelector('.hero-image-container');
-  if (!heroImage) return;
-  
-  heroImage.addEventListener('mousemove', (e) => {
-    const { left, top, width, height } = heroImage.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    
-    heroImage.style.transform = `
-      perspective(1000px)
-      rotateY(${x * 5}deg)
-      rotateX(${y * -5}deg)
-      scale3d(1.02, 1.02, 1.02)
-    `;
-  });
-  
-  heroImage.addEventListener('mouseleave', () => {
-    heroImage.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) scale3d(1, 1, 1)';
-  });
-}
-
-// Enhanced program card interactions
-function enhanceProgramCards() {
-  const programCards = document.querySelectorAll('.program-card');
-  
-  programCards.forEach(card => {
-    // Tilt effect on mouse move
-    card.addEventListener('mousemove', (e) => {
-      const { left, top, width, height } = card.getBoundingClientRect();
-      const x = (e.clientX - left) / width - 0.5;
-      const y = (e.clientY - top) / height - 0.5;
-      
-      card.style.transform = `
-        translateY(-15px)
-        rotateY(${x * 5}deg)
-        rotateX(${y * -5}deg)
-        scale(1.02)
-      `;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'translateY(0) rotateY(0) rotateX(0) scale(1)';
-    });
-    
-    // Click animation
-    card.addEventListener('click', function(e) {
-      if (!e.target.closest('a')) {
-        this.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-          this.style.transform = '';
-        }, 150);
-      }
-    });
-  });
-}
-
-// Dynamic counter animation for stats
-function animateCounters() {
-  const stats = document.querySelectorAll('.stat-number');
-  
-  stats.forEach(stat => {
-    const target = parseInt(stat.textContent);
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    let current = 0;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
-      }
-      stat.textContent = Math.floor(current).toLocaleString();
-    }, 16);
-  });
-}
-
-// Enhanced navigation scroll effect
-function enhanceNavigation() {
-  const navbar = document.querySelector('.navbar');
-  const hamburger = document.getElementById('hamburger');
-  const navMenu = document.querySelector('.nav-menu');
-  
-  // Scroll effect
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-    
-    // Update active nav link
-    updateActiveNav();
-  });
-  
-  // Enhanced mobile menu
-  if (hamburger) {
-    hamburger.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      hamburger.innerHTML = navMenu.classList.contains('active')
-        ? '<i class="fas fa-times"></i>'
-        : '<i class="fas fa-bars"></i>';
-      
-      // Prevent body scroll when menu is open
-      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : 'auto';
-    });
-  }
-  
-  // Close menu on link click
-  document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('active');
-      hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-      document.body.style.overflow = 'auto';
-    });
-  });
-}
-
-// Active navigation highlighting
-function updateActiveNav() {
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
-  
-  let current = '';
-  
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop - 100;
-    if (scrollY >= sectionTop) {
-      current = section.getAttribute('id');
-    }
-  });
-  
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${current}`) {
-      link.classList.add('active');
-    }
-  });
-}
-
-// Enhanced form submission with animation
-function enhanceForm() {
-  const form = document.getElementById('leadForm');
-  if (!form) return;
-  
-  const inputs = form.querySelectorAll('input, select');
-  
-  inputs.forEach(input => {
-    // Add focus animation
-    input.addEventListener('focus', function() {
-      this.parentElement.style.transform = 'translateY(-5px)';
-    });
-    
-    input.addEventListener('blur', function() {
-      this.parentElement.style.transform = 'translateY(0)';
-    });
-    
-    // Add floating label effect
-    if (input.value) {
-      input.parentElement.classList.add('has-value');
-    }
-    
-    input.addEventListener('input', function() {
-      if (this.value) {
-        this.parentElement.classList.add('has-value');
-      } else {
-        this.parentElement.classList.remove('has-value');
-      }
-    });
-  });
-  
-  // Enhanced submit animation
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    
-    // Animate button
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call with success animation
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Success animation
-    submitBtn.innerHTML = '<i class="fas fa-check"></i> Success!';
-    submitBtn.style.background = 'linear-gradient(135deg, #1dd1a1, #17b68f)';
-    
-    // Show confetti effect
-    showConfetti();
-    
-    // Reset form
-    setTimeout(() => {
-      form.reset();
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-      submitBtn.style.background = '';
-      showNotification('Thank you! We\'ll contact you soon. 🚀', 'success');
-    }, 2000);
-  });
-}
-
-// Confetti effect
-function showConfetti() {
-  const confettiCount = 50;
-  const container = document.querySelector('.cta-final') || document.body;
-  
-  for (let i = 0; i < confettiCount; i++) {
-    const confetti = document.createElement('div');
-    confetti.innerHTML = '🎉';
-    confetti.style.position = 'absolute';
-    confetti.style.fontSize = '20px';
-    confetti.style.zIndex = '9999';
-    confetti.style.pointerEvents = 'none';
-    
-    // Random position
-    const x = Math.random() * window.innerWidth;
-    confetti.style.left = `${x}px`;
-    confetti.style.top = '-30px';
-    
-    // Random animation
-    const duration = Math.random() * 3 + 2;
-    const rotation = Math.random() * 720 - 360;
-    
-    confetti.style.animation = `
-      confettiFall ${duration}s ease-in forwards,
-      confettiSpin ${duration/2}s linear infinite
-    `;
-    
-    container.appendChild(confetti);
-    
-    // Remove after animation
-    setTimeout(() => {
-      confetti.remove();
-    }, duration * 1000);
-  }
-  
-  // Add confetti styles
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes confettiFall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(${Math.random() * 360}deg); opacity: 0; }
-    }
-    @keyframes confettiSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-// Enhanced notification system
-function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `notification notification-${type}`;
-  notification.innerHTML = `
-    <div class="notification-content">
-      <span>${message}</span>
-      <button class="notification-close">&times;</button>
-    </div>
-  `;
-  
-  document.body.appendChild(notification);
-  
-  // Auto-remove after 5 seconds
-  const timeout = setTimeout(() => {
-    notification.style.animation = 'slideOutRight 0.5s ease forwards';
-    setTimeout(() => notification.remove(), 500);
-  }, 5000);
-  
-  // Manual close
-  notification.querySelector('.notification-close').addEventListener('click', () => {
-    clearTimeout(timeout);
-    notification.style.animation = 'slideOutRight 0.5s ease forwards';
-    setTimeout(() => notification.remove(), 500);
-  });
-}
-
-// Smooth scrolling with offset
-function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        const offset = 100;
-        const targetPosition = targetElement.offsetTop - offset;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-}
-
-// Parallax effect for hero
-function initParallax() {
-  window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    const quote = document.querySelector('.motivational-quote');
-    
-    if (hero) {
-      hero.style.backgroundPositionY = `${scrolled * 0.5}px`;
-    }
-    
-    if (quote) {
-      quote.style.transform = `translateY(${scrolled * 0.1}px)`;
-    }
-  });
-}
-
-// Initialize everything when DOM loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Create particles
-  createParticles();
-  
-  // Initialize animations
-  initScrollAnimations();
-  initParallax();
-  initSmoothScroll();
-  
-  // Enhance components
-  enhanceHeroImage();
-  enhanceProgramCards();
-  enhanceNavigation();
-  enhanceForm();
-  
-  // Start counter animation when stats are visible
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateCounters();
-        observer.unobserve(entry.target);
-      }
-    });
-  });
-  
-  const heroStats = document.querySelector('.hero-stats');
-  if (heroStats) observer.observe(heroStats);
-  
-  // Add motivational messages randomly
-  setTimeout(() => {
-    const messages = [
-      "Your future in tech starts today! 💻",
-      "Dream it. Code it. Live it. 🚀",
-      "The best investment is in yourself! 💪",
-      "Ready to transform your career? Let's go! ✨"
-    ];
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    showNotification(randomMessage, 'info');
-  }, 10000);
-});
-
-// Enhanced schedule call function
+// ============ SCHEDULE CALL FUNCTION ============
 function scheduleCall() {
-  const leadForm = document.getElementById('leadForm');
-  if (leadForm) {
-    leadForm.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'center'
+    if (leadForm) {
+        leadForm.scrollIntoView({ behavior: 'smooth' });
+        leadForm.querySelector('input[type="text"]').focus();
+    }
+}
+
+// ============ MOBILE NAVIGATION TOGGLE ============
+function initMobileNavigation() {
+    if (!hamburger) return;
+    
+    hamburger.addEventListener('click', () => {
+        const isActive = navMenu.classList.toggle('active');
+        hamburger.innerHTML = isActive ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        document.body.style.overflow = isActive ? 'hidden' : 'auto';
+    });
+
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = 'auto';
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.navbar') && navMenu?.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Close mobile menu on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navMenu?.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+// ============ FORM VALIDATION & SUBMISSION ============
+function initFormSubmission() {
+    if (!leadForm) return;
+    
+    const submitBtn = leadForm.querySelector('button[type="submit"]');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    leadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const nameInput = this.querySelector('input[type="text"]');
+        const emailInput = this.querySelector('input[type="email"]');
+        const programSelect = this.querySelector('select');
+        
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const program = programSelect.value;
+
+        // Validation
+        if (!name || !email || !program) {
+            showNotification('Please fill in all fields.', 'error');
+            return;
+        }
+
+        if (!emailRegex.test(email)) {
+            showNotification('Please enter a valid email address.', 'error');
+            return;
+        }
+
+        // Disable submit button during submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            showNotification(`Thank you, ${name}! We'll contact you at ${email} soon.`, 'success');
+            leadForm.reset();
+            console.log('Lead captured:', { name, email, program });
+        } catch (error) {
+            showNotification('An error occurred. Please try again.', 'error');
+            console.error('Form submission error:', error);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Book Free Call <i class="fas fa-calendar-check"></i>';
+        }
+    });
+}
+
+// ============ NOTIFICATION SYSTEM ============
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span>${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove notification
+    const timeout = setTimeout(() => {
+        notification.classList.add('notification-hidden');
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        clearTimeout(timeout);
+        notification.classList.add('notification-hidden');
+        setTimeout(() => notification.remove(), 300);
+    });
+}
+
+// ============ SMOOTH SCROLLING ============
+function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if(targetId === '#') return;
+
+            const targetElement = document.querySelector(targetId);
+            if(targetElement) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// ============ SCROLL ANIMATIONS ============
+function initScrollAnimations() {
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.program-card, .step, .price-card').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// ============ PROGRAM CARD HOVER EFFECTS ============
+function initCardHoverEffects() {
+    document.querySelectorAll('.program-card').forEach(card => {
+        card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-10px)');
+        card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0)');
+    });
+}
+
+// ============ ACTIVE NAVIGATION HIGHLIGHT ============
+function initActiveNavHighlight() {
+    function updateActiveNav() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+        
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            if (window.scrollY >= sectionTop) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+}
+
+// ============ ANIMATED METRICS COUNTER ============
+function animateMetrics() {
+    const metrics = document.querySelectorAll('.metric-number');
+    
+    if (!metrics.length) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const metric = entry.target;
+                const target = parseFloat(metric.getAttribute('data-target'));
+                const suffix = metric.nextElementSibling?.classList.contains('metric-suffix') ? metric.nextElementSibling : null;
+                const duration = 1500;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    metric.textContent = suffix ? Math.floor(current) : current.toFixed(1);
+                }, 16);
+                
+                observer.unobserve(metric);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    metrics.forEach(metric => observer.observe(metric));
+}
+
+// ============ HORIZONTAL SCROLL CONTROL ============
+function initHorizontalScroll() {
+    const scrollSections = document.querySelectorAll('.scroll-section');
+    
+    scrollSections.forEach(section => {
+        const container = section.querySelector('.scroll-container') || section.querySelector('.programs-scroll-container');
+        const leftBtn = section.querySelector('.scroll-left');
+        const rightBtn = section.querySelector('.scroll-right');
+        
+        if (!container || !leftBtn || !rightBtn) return;
+        
+        const scrollAmount = 350;
+        
+        function updateButtonStates() {
+            const scrollLeft = container.scrollLeft;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            
+            leftBtn.classList.toggle('disabled', scrollLeft <= 10);
+            rightBtn.classList.toggle('disabled', scrollLeft >= maxScroll - 10);
+        }
+        
+        function scrollLeft() {
+            if (leftBtn.classList.contains('disabled')) return;
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        }
+        
+        function scrollRight() {
+            if (rightBtn.classList.contains('disabled')) return;
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+        
+        leftBtn.addEventListener('click', scrollLeft);
+        rightBtn.addEventListener('click', scrollRight);
+        container.addEventListener('scroll', updateButtonStates);
+        window.addEventListener('resize', updateButtonStates);
+        
+        // Keyboard navigation
+        container.setAttribute('tabindex', '0');
+        container.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollLeft();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollRight();
+            }
+        });
+        
+        updateButtonStates();
+    });
+}
+
+// ============ VIDEO PLAYBACK CONTROL ============
+function initVideoPlayer() {
+    const videoContainer = document.querySelector('.video-container');
+    const videoPlayBtn = document.querySelector('.video-play-btn');
+    const videoElement = document.querySelector('.video-container video');
+    
+    if (!videoContainer || !videoPlayBtn) return;
+    
+    // For YouTube iframe
+    if (videoContainer.querySelector('iframe')) {
+        videoPlayBtn.addEventListener('click', () => {
+            videoContainer.classList.add('playing');
+            // Note: Would need YouTube API for actual playback
+        });
+        return;
+    }
+    
+    // For local HTML5 video
+    if (!videoElement) return;
+    
+    // Create video controls
+    const videoControls = document.createElement('div');
+    videoControls.className = 'video-controls';
+    videoControls.innerHTML = `
+        <button class="video-play-pause">
+            <i class="fas fa-pause"></i>
+        </button>
+        <div class="video-progress">
+            <div class="video-progress-bar"></div>
+        </div>
+        <button class="video-mute">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    `;
+    
+    videoContainer.appendChild(videoControls);
+    
+    const playPauseBtn = videoControls.querySelector('.video-play-pause');
+    const muteBtn = videoControls.querySelector('.video-mute');
+    const progressBar = videoControls.querySelector('.video-progress-bar');
+    
+    // Play/Pause
+    function togglePlayPause() {
+        if (videoElement.paused) {
+            videoElement.play();
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            videoContainer.classList.add('playing');
+        } else {
+            videoElement.pause();
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+    }
+    
+    // Mute/Unmute
+    function toggleMute() {
+        videoElement.muted = !videoElement.muted;
+        muteBtn.innerHTML = videoElement.muted 
+            ? '<i class="fas fa-volume-mute"></i>' 
+            : '<i class="fas fa-volume-up"></i>';
+    }
+    
+    // Update progress
+    function updateProgress() {
+        const percent = (videoElement.currentTime / videoElement.duration) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+    
+    // Seek on progress bar click
+    videoControls.querySelector('.video-progress').addEventListener('click', (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        videoElement.currentTime = pos * videoElement.duration;
     });
     
-    // Add attention animation
-    leadForm.style.animation = 'pulse 2s ease-in-out';
-    setTimeout(() => {
-      leadForm.style.animation = '';
-    }, 2000);
+    // Event listeners
+    videoPlayBtn.addEventListener('click', togglePlayPause);
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    muteBtn.addEventListener('click', toggleMute);
+    videoElement.addEventListener('timeupdate', updateProgress);
+    videoElement.addEventListener('ended', () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        videoContainer.classList.remove('playing');
+    });
     
-    // Focus on name field
-    const nameInput = leadForm.querySelector('input[type="text"]');
-    nameInput.focus();
+    // Try autoplay
+    videoElement.addEventListener('loadedmetadata', () => {
+        if (videoElement.hasAttribute('autoplay') && videoElement.hasAttribute('muted')) {
+            videoElement.play().catch(e => console.log('Autoplay prevented:', e));
+        }
+    });
+}
+
+// ============ PAGE INITIALIZATION ============
+function initPage() {
+    initMobileNavigation();
+    initFormSubmission();
+    initSmoothScrolling();
+    initScrollAnimations();
+    initCardHoverEffects();
+    initActiveNavHighlight();
+    initHorizontalScroll();
+    animateMetrics();
+    initVideoPlayer(); // Add video initialization here
     
-    // Show motivational message
-    showNotification('Great choice! Let\'s build your future together. 🎯', 'info');
-  }
+    window.addEventListener('load', () => {
+        document.body.classList.add('loaded');
+    });
+}
+
+// ============ INITIALIZE EVERYTHING ============
+document.addEventListener('DOMContentLoaded', initPage);
+
+// ============ VIDEO PLAYBACK CONTROL ============
+function initVideoPlayer() {
+    const videoContainer = document.querySelector('.video-container');
+    const videoPlayBtn = document.querySelector('.video-play-btn');
+    const videoElement = document.querySelector('.video-container video');
+    
+    if (!videoContainer || !videoPlayBtn) return;
+    
+    // For local HTML5 video
+    if (!videoElement) return;
+    
+    // Create video controls
+    const videoControls = document.createElement('div');
+    videoControls.className = 'video-controls';
+    videoControls.innerHTML = `
+        <button class="video-play-pause">
+            <i class="fas fa-pause"></i>
+        </button>
+        <div class="video-progress">
+            <div class="video-progress-bar"></div>
+        </div>
+        <div class="video-volume-container">
+            <button class="video-volume-btn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="video-volume-slider">
+                <input type="range" min="0" max="1" step="0.1" value="1" class="video-volume-range">
+            </div>
+        </div>
+    `;
+    
+    videoContainer.appendChild(videoControls);
+    
+    const playPauseBtn = videoControls.querySelector('.video-play-pause');
+    const volumeBtn = videoControls.querySelector('.video-volume-btn');
+    const volumeSlider = videoControls.querySelector('.video-volume-range');
+    const progressBar = videoControls.querySelector('.video-progress-bar');
+    
+    // Play/Pause - UPDATED: Unmute when play button is pressed
+    function togglePlayPause() {
+        if (videoElement.paused) {
+            videoElement.muted = false; // UNMUTE WHEN PLAYING
+            videoElement.volume = 1; // SET VOLUME TO 100%
+            if (volumeSlider) volumeSlider.value = 1;
+            videoElement.play();
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            videoContainer.classList.add('playing');
+            volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        } else {
+            videoElement.pause();
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+    }
+    
+    // Volume control
+    function updateVolume() {
+        videoElement.volume = volumeSlider.value;
+        videoElement.muted = volumeSlider.value == 0;
+        
+        // Update volume button icon
+        if (videoElement.muted || volumeSlider.value == 0) {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else if (volumeSlider.value < 0.5) {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+        } else {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+    }
+    
+    // Toggle mute
+    function toggleMute() {
+        if (videoElement.muted) {
+            videoElement.muted = false;
+            videoElement.volume = 1;
+            if (volumeSlider) volumeSlider.value = 1;
+            volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        } else {
+            videoElement.muted = true;
+            if (volumeSlider) volumeSlider.value = 0;
+            volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        }
+    }
+    
+    // Update progress
+    function updateProgress() {
+        const percent = (videoElement.currentTime / videoElement.duration) * 100;
+        progressBar.style.width = `${percent}%`;
+    }
+    
+    // Seek on progress bar click
+    videoControls.querySelector('.video-progress').addEventListener('click', (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        videoElement.currentTime = pos * videoElement.duration;
+    });
+    
+    // Event listeners
+    videoPlayBtn.addEventListener('click', togglePlayPause);
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    volumeBtn.addEventListener('click', toggleMute);
+    
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', updateVolume);
+    }
+    
+    videoElement.addEventListener('timeupdate', updateProgress);
+    videoElement.addEventListener('ended', () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        videoContainer.classList.remove('playing');
+    });
+    
+    // Try autoplay (muted)
+    videoElement.addEventListener('loadedmetadata', () => {
+        if (videoElement.hasAttribute('autoplay') && videoElement.hasAttribute('muted')) {
+            videoElement.muted = true; // Start muted for autoplay
+            videoElement.play().catch(e => console.log('Autoplay prevented:', e));
+            // Update UI for muted state
+            if (volumeSlider) volumeSlider.value = 0;
+            volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        }
+    });
+    
+    // Update volume UI when video metadata loads
+    videoElement.addEventListener('loadedmetadata', () => {
+        if (volumeSlider) {
+            volumeSlider.value = videoElement.volume;
+            updateVolume();
+        }
+    });
 }
